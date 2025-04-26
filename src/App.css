@@ -184,3 +184,65 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+/* Scrollbar düzenleme */
+.message-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.message-box::-webkit-scrollbar-track {
+  background: #000;
+}
+
+.message-box::-webkit-scrollbar-thumb {
+  background: #00ff00;
+  border-radius: 4px;
+}
+
+.message-box::-webkit-scrollbar-thumb:hover {
+  background: #00cc00;
+}
+
+@media (max-width: 768px) {
+  .chat-layout {
+    flex-direction: column;
+  }
+
+  .main-section {
+    flex-direction: column;
+  }
+
+  .user-list {
+    width: 100%;
+    border-right: none;
+    border-bottom: 2px solid #00ff00;
+    padding: 10px;
+  }
+
+  .chat-section {
+    padding: 10px;
+  }
+
+  .input-row {
+    flex-direction: column;
+    margin-top: 10px;
+  }
+
+  .input-row input,
+  .input-row button {
+    width: 100%;
+    margin: 5px 0;
+  }
+
+  .top-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
