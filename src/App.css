@@ -1,0 +1,175 @@
+body {
+  margin: 0;
+  background-color: #000;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+}
+
+/* Üst bar */
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  padding: 15px 30px;
+  border-bottom: 2px solid #00ff00;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.menu span {
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+/* Ana içerik düzeni */
+.chat-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main-section {
+  display: flex;
+  flex: 1;
+}
+
+/* Sol kullanıcı listesi */
+.user-list {
+  width: 250px;
+  padding: 20px;
+  border-right: 2px solid #00ff00;
+  background: #0a0a0a;
+}
+
+.user-list h3 {
+  margin-top: 0;
+}
+
+/* Chat alanı */
+.chat-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.chat-section h3 {
+  margin-top: 0;
+}
+
+.message-box {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+.message-box p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+/* Mesaj yazma alanı */
+.input-row {
+  display: flex;
+}
+
+.input-row input {
+  flex: 1;
+  padding: 10px;
+  background: #000;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  outline: none;
+  font-size: 16px;
+}
+
+.input-row button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  background: #00ff00;
+  color: #000;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.input-row button:hover {
+  background: #00cc00;
+}
+
+/* Login/Register tasarımı */
+.login-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-container h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #00ff00;
+}
+
+.warning {
+  font-size: 14px;
+  color: #ff0000;
+  margin-bottom: 10px;
+  text-shadow: 0 0 5px #ff0000;
+}
+
+.login-container input {
+  padding: 10px;
+  margin: 10px;
+  background: #000000;
+  color: #00ff00;
+  border: 1px solid #00ff00;
+  outline: none;
+  font-size: 16px;
+  width: 250px;
+}
+
+.login-container input::placeholder {
+  color: #00aa00;
+}
+
+.login-container .button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.login-container button {
+  background: transparent;
+  color: #00ff00;
+  border: 1px solid #00ff00;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.login-container button:hover {
+  background: #00ff00;
+  color: #000;
+}
+
+.timestamp {
+  color: #888;
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+.messages p strong.system {
+  color: #ff4444;
+}
+
+.system {
+  color: #ff4444;
+}
