@@ -81,7 +81,7 @@ export default function ChatPage() {
         <div className="chat-section">
           <h3>Global Chat</h3>
 
-          <div className="message-box">
+          <div className="chat-messages">
             {chat.map((c, i) => (
               <p key={i} className={c.sender === 'Sistem' ? 'system' : ''}>
                 <span className="timestamp">[{c.timestamp}]</span>{' '}
@@ -92,7 +92,7 @@ export default function ChatPage() {
             <div ref={messageEndRef} />
           </div>
 
-          <div className="input-row">
+          <div className="chat-input">
             <input
               type="text"
               placeholder="Mesaj yaz..."
