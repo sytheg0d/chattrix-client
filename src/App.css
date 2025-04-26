@@ -173,3 +173,14 @@ body {
 .system {
   color: #ff4444;
 }
+
+.message-box {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  height: 100%;
+  max-height: 400px; /* ✅ Sohbet kutusu 400px'den fazla olunca scroll çıkar */
+  padding-right: 10px; /* Scroll barın üstüne yazı gelmesin */
+  display: flex;
+  flex-direction: column;
+}

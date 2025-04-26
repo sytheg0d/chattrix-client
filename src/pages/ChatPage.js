@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../App.css';
 import { io } from 'socket.io-client';
@@ -17,6 +17,7 @@ export default function ChatPage() {
   const [chat, setChat] = useState([]);
   const [users, setUsers] = useState([]);
   const nickname = location.state?.nickname;
+  const messageEndRef = useRef(null); // 📌 Scroll için referans
 
   useEffect(() => {
     if (!nickname) {
@@ -39,6 +40,13 @@ export default function ChatPage() {
       socket.off('update_users');
     };
   }, [nickname, navigate]);
+
+  // 📌 Mesaj gelince otomatik aşağı scroll
+  useEffect(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [chat]);
 
   const sendMessage = () => {
     if (message.trim() !== '') {
@@ -72,6 +80,7 @@ export default function ChatPage() {
 
         <div className="chat-section">
           <h3>Global Chat</h3>
+
           <div className="message-box">
             {chat.map((c, i) => (
               <p key={i} className={c.sender === 'Sistem' ? 'system' : ''}>
@@ -79,6 +88,8 @@ export default function ChatPage() {
                 <strong>@{c.sender} ➤</strong> {c.message}
               </p>
             ))}
+            {/* 📌 Scroll'un sonu */}
+            <div ref={messageEndRef} />
           </div>
 
           <div className="input-row">
