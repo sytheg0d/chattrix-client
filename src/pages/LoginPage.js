@@ -10,7 +10,7 @@ export default function LoginPage() {
 
   const login = async () => {
     try {
-      const res = await axios.post('http://localhost:3001/login', {
+      const res = await axios.post('https://chattrix-server.onrender.com/login', {
         username: nickname,
         password,
       });
