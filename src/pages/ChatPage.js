@@ -17,7 +17,7 @@ export default function ChatPage() {
   const [chat, setChat] = useState([]);
   const [users, setUsers] = useState([]);
   const nickname = location.state?.nickname;
-  const messageEndRef = useRef(null); // 📌 Scroll için referans
+  const messageEndRef = useRef(null);
 
   useEffect(() => {
     if (!nickname) {
@@ -35,13 +35,20 @@ export default function ChatPage() {
       setUsers(userList);
     });
 
+    const handleBeforeUnload = () => {
+      socket.emit('logout', nickname);
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
     return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      socket.emit('logout', nickname);
       socket.off('receive_message');
       socket.off('update_users');
     };
   }, [nickname, navigate]);
 
-  // 📌 Mesaj gelince otomatik aşağı scroll
   useEffect(() => {
     if (messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -88,7 +95,6 @@ export default function ChatPage() {
                 <strong>@{c.sender} ➤</strong> {c.message}
               </p>
             ))}
-            {/* 📌 Scroll'un sonu */}
             <div ref={messageEndRef} />
           </div>
 
