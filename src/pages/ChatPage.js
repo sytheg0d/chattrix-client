@@ -15,7 +15,6 @@ export default function ChatPage() {
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);  // Loading state ekledik
   const nickname = location.state?.nickname;
   const messageEndRef = useRef(null);
 
@@ -34,9 +33,6 @@ export default function ChatPage() {
     socket.on('update_users', (userList) => {
       setUsers(userList);
     });
-
-    // Yükleniyor durumunu kontrol et
-    setLoading(false);  // Veri alındığında loading state'ini false yapıyoruz
 
     const handleBeforeUnload = () => {
       socket.emit('logout', nickname);
@@ -59,7 +55,7 @@ export default function ChatPage() {
   }, [chat]);
 
   const sendMessage = () => {
-    if (!message.trim()) return;
+    if (message.trim() === '') return;
 
     const timestamp = new Date().toLocaleTimeString([], {
       hour: '2-digit',
@@ -68,6 +64,22 @@ export default function ChatPage() {
 
     socket.emit('send_message', { sender: nickname, message, timestamp });
     setMessage('');
+  };
+
+  const formatUsername = (username) => {
+    // God kullanıcı
+    if (username.toLowerCase() === 'hang0ver') {
+      return <span style={{ color: 'gold' }}>[GOD]</span>;
+    }
+    // Admin kullanıcı
+    if (username.startsWith('[ADMIN] ')) {
+      return <span style={{ color: 'white' }}>[ADMIN]</span>;
+    }
+    // Mod kullanıcı
+    if (username.startsWith('[MOD] ')) {
+      return <span style={{ color: 'white' }}>[MOD]</span>;
+    }
+    return null;
   };
 
   const displayName = (name) => {
@@ -110,13 +122,9 @@ export default function ChatPage() {
       <div className="main-section">
         <div className="user-list">
           <h3>Online Users</h3>
-          {loading ? (  // Loading state kontrolü
-            <p>Loading...</p>
-          ) : (
-            users.map((user, i) => (
-              <p key={i}>{displayName(user)}</p>
-            ))
-          )}
+          {users.map((user, i) => (
+            <p key={i}>{displayName(user)}</p>
+          ))}
         </div>
 
         <div className="chat-section">
