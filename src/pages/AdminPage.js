@@ -12,6 +12,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!localStorage.getItem('adminToken')) {
+      // Token yoksa giriş sayfasına yönlendir
       navigate('/admin-login');
     } else {
       fetchUsers();
@@ -22,7 +23,7 @@ export default function AdminPage() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('https://chattrix-2ur3.onrender.com/get-users');
+      const res = await axios.get('https://chattrix-server.onrender.com/get-users');
       setUsers(res.data);
       const initialRoles = {};
       res.data.forEach(user => {
@@ -36,7 +37,7 @@ export default function AdminPage() {
 
   const fetchLogs = async () => {
     try {
-      const res = await axios.get('https://chattrix-2ur3.onrender.com/logs');
+      const res = await axios.get('https://chattrix-server.onrender.com/logs');
       setLogs(res.data);
     } catch (err) {
       console.error('Loglar alınamadı:', err);
@@ -45,7 +46,7 @@ export default function AdminPage() {
 
   const fetchBannedIps = async () => {
     try {
-      const res = await axios.get('https://chattrix-2ur3.onrender.com/banned-ips');
+      const res = await axios.get('https://chattrix-server.onrender.com/banned-ips');
       setBannedIps(res.data);
     } catch (err) {
       console.error('Banlı IPler alınamadı:', err);
@@ -54,7 +55,7 @@ export default function AdminPage() {
 
   const updateRole = async (username) => {
     try {
-      await axios.post('https://chattrix-2ur3.onrender.com/update-role', {
+      await axios.post('https://chattrix-server.onrender.com/update-role', {
         username,
         newRole: roles[username]
       });
@@ -67,7 +68,7 @@ export default function AdminPage() {
   const deleteUser = async (username) => {
     if (window.confirm(`${username} adlı kullanıcıyı silmek istiyor musun?`)) {
       try {
-        await axios.post('https://chattrix-2ur3.onrender.com/delete-user', { username });
+        await axios.post('https://chattrix-server.onrender.com/delete-user', { username });
         fetchUsers();
       } catch (err) {
         console.error('Kullanıcı silinemedi:', err);
@@ -78,7 +79,7 @@ export default function AdminPage() {
   const unbanIp = async (ip) => {
     if (window.confirm(`${ip} IP adresinin banını kaldırmak istiyor musun?`)) {
       try {
-        await axios.post('https://chattrix-2ur3.onrender.com/unban-ip', { ip });
+        await axios.post('https://chattrix-server.onrender.com/unban-ip', { ip });
         fetchBannedIps();
       } catch (err) {
         console.error('Ban kaldırılamadı:', err);
@@ -90,6 +91,7 @@ export default function AdminPage() {
     <div style={{ padding: '20px', backgroundColor: '#000', color: '#00ff00', minHeight: '100vh' }}>
       <h1>Admin Panel</h1>
 
+      {/* Kullanıcılar Tablosu */}
       <h2>Kullanıcılar</h2>
       <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '30px' }}>
         <thead>

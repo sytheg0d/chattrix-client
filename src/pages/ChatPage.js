@@ -6,7 +6,7 @@ import { io } from 'socket.io-client';
 const socket = io(
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3001'
-    : 'https://chattrix-2ur3.onrender.com'
+    : 'https://chattrix-server.onrender.com'
 );
 
 export default function ChatPage() {
@@ -67,40 +67,47 @@ export default function ChatPage() {
   };
 
   const displayName = (user) => {
-    if (!user) return null;
+    if (!user || !user.username) return null;
 
-    let username = '';
-    let role = '';
-
-    if (typeof user === 'string') {
-      username = user;
-    } else if (typeof user === 'object') {
-      username = user.username;
-      role = user.role;
-    }
-
-    if (username.toLowerCase() === 'hang0ver') {
+    if (user.username.toLowerCase() === 'hang0ver') {
       return (
         <>
-          <span style={{ color: 'gold' }}>[GOD]</span> @{username}
+          <span style={{ color: 'gold' }}>[GOD]</span> @{user.username}
         </>
       );
     }
-    if (role === 'admin') {
+
+    if (user.role === 'admin') {
       return (
         <>
-          <span style={{ color: 'white' }}>[ADMIN]</span> @{username}
+          <span style={{ color: 'white' }}>[ADMIN]</span> @{user.username}
         </>
       );
     }
-    if (role === 'moderator') {
+
+    if (user.role === 'moderator') {
       return (
         <>
-          <span style={{ color: 'white' }}>[MOD]</span> @{username}
+          <span style={{ color: 'white' }}>[MOD]</span> @{user.username}
         </>
       );
     }
-    return <>@{username}</>;
+
+    return <>@{user.username}</>;
+  };
+
+  const displayMessageSender = (sender) => {
+    if (!sender) return null;
+
+    if (sender.toLowerCase() === 'hang0ver') {
+      return (
+        <>
+          <span style={{ color: 'gold' }}>[GOD]</span> @{sender}
+        </>
+      );
+    }
+
+    return <>@{sender}</>;
   };
 
   return (
@@ -128,7 +135,7 @@ export default function ChatPage() {
             {chat.map((c, i) => (
               <p key={i} className={c.sender === 'Sistem' ? 'system' : ''}>
                 <span className="timestamp">[{c.timestamp}]</span>{' '}
-                <strong>{displayName(c.sender)} ➤</strong> {c.message}
+                <strong>{displayMessageSender(c.sender)} ➤</strong> {c.message}
               </p>
             ))}
             <div ref={messageEndRef} />
