@@ -277,3 +277,55 @@ body {
   overflow-y: auto;
   font-size: 14px;
 }
+
+/* Admin Page Stil */
+.admin-panel {
+  background-color: #000;
+  color: #00ff00;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+h1, h2 {
+  color: #00ff00;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+}
+
+th, td {
+  padding: 8px;
+  border: 1px solid #00ff00;
+}
+
+button {
+  padding: 5px 10px;
+  cursor: pointer;
+  border: none;
+  color: white;
+  background-color: #00ff00;
+  margin-right: 10px;
+}
+
+button.delete {
+  background-color: #ff0000;
+}
+
+button.unban {
+  background-color: #ff4500;
+}
+
+table thead {
+  background-color: #111;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #222;
+}
+
+table tbody tr:nth-child(odd) {
+  background-color: #333;
+}
