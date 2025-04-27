@@ -67,15 +67,12 @@ export default function ChatPage() {
   };
 
   const formatUsername = (username) => {
-    // God kullanıcı
     if (username.toLowerCase() === 'hang0ver') {
       return <span style={{ color: 'gold' }}>[GOD]</span>;
     }
-    // Admin kullanıcı
     if (username.startsWith('[ADMIN] ')) {
       return <span style={{ color: 'white' }}>[ADMIN]</span>;
     }
-    // Mod kullanıcı
     if (username.startsWith('[MOD] ')) {
       return <span style={{ color: 'white' }}>[MOD]</span>;
     }

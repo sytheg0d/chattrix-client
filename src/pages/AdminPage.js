@@ -7,12 +7,8 @@ export default function AdminPage() {
   const [logs, setLogs] = useState([]);
   const [bannedIps, setBannedIps] = useState([]);
   const [roles, setRoles] = useState({});
-  const [loadingUsers, setLoadingUsers] = useState(false);
-  const [loadingLogs, setLoadingLogs] = useState(false);
-  const [loadingBannedIps, setLoadingBannedIps] = useState(false);
 
   const fetchUsers = async () => {
-    setLoadingUsers(true);
     try {
       const res = await axios.get('https://chattrix-server.onrender.com/get-users');
       setUsers(res.data);
@@ -23,32 +19,24 @@ export default function AdminPage() {
       setRoles(initialRoles);
     } catch (err) {
       console.error('Kullanıcılar alınamadı:', err);
-    } finally {
-      setLoadingUsers(false);
     }
   };
 
   const fetchLogs = async () => {
-    setLoadingLogs(true);
     try {
       const res = await axios.get('https://chattrix-server.onrender.com/logs');
       setLogs(res.data);
     } catch (err) {
       console.error('Loglar alınamadı:', err);
-    } finally {
-      setLoadingLogs(false);
     }
   };
 
   const fetchBannedIps = async () => {
-    setLoadingBannedIps(true);
     try {
       const res = await axios.get('https://chattrix-server.onrender.com/banned-ips');
       setBannedIps(res.data);
     } catch (err) {
       console.error('Banlı IPler alınamadı:', err);
-    } finally {
-      setLoadingBannedIps(false);
     }
   };
 
@@ -102,11 +90,6 @@ export default function AdminPage() {
   return (
     <div style={{ padding: '20px', backgroundColor: '#000', color: '#00ff00', minHeight: '100vh' }}>
       <h1>Admin Panel</h1>
-
-      {/* Loading indicators for better UX */}
-      {loadingUsers && <div>Loading users...</div>}
-      {loadingLogs && <div>Loading logs...</div>}
-      {loadingBannedIps && <div>Loading banned IPs...</div>}
 
       {/* Kullanıcılar Tablosu */}
       <h2>Kullanıcılar</h2>
