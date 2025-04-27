@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../App.css'; // İstersen ufak stiller için App.css'yi kullanabilirsin
+import '../App.css';
 
 export default function AdminPage() {
   const [users, setUsers] = useState([]);
@@ -12,6 +12,7 @@ export default function AdminPage() {
     try {
       const res = await axios.get('https://chattrix-server.onrender.com/get-users');
       setUsers(res.data);
+
       const initialRoles = {};
       res.data.forEach(user => {
         initialRoles[user.username] = user.role;
@@ -61,9 +62,7 @@ export default function AdminPage() {
   const deleteUser = async (username) => {
     if (window.confirm(`${username} adlı kullanıcıyı silmek istediğine emin misin?`)) {
       try {
-        await axios.post('https://chattrix-server.onrender.com/delete-user', {
-          username
-        });
+        await axios.post('https://chattrix-server.onrender.com/delete-user', { username });
         alert('Kullanıcı silindi.');
         fetchUsers();
       } catch (err) {
@@ -77,7 +76,7 @@ export default function AdminPage() {
       <h1>Admin Panel</h1>
 
       <h2>Kullanıcılar</h2>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '30px' }}>
         <thead>
           <tr>
             <th style={{ border: '1px solid #00ff00', padding: '8px' }}>Kullanıcı Adı</th>
@@ -86,14 +85,19 @@ export default function AdminPage() {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {users.map(user => (
             <tr key={user._id}>
               <td style={{ border: '1px solid #00ff00', padding: '8px' }}>@{user.username}</td>
               <td style={{ border: '1px solid #00ff00', padding: '8px' }}>
                 <select
-                  value={roles[user.username]}
+                  value={roles[user.username] || 'user'}
                   onChange={(e) => setRoles({ ...roles, [user.username]: e.target.value })}
-                  style={{ backgroundColor: '#000', color: '#00ff00', border: '1px solid #00ff00' }}
+                  style={{
+                    backgroundColor: '#000',
+                    color: '#00ff00',
+                    border: '1px solid #00ff00',
+                    padding: '5px'
+                  }}
                 >
                   <option value="user">User</option>
                   <option value="moderator">Moderator</option>
@@ -103,13 +107,28 @@ export default function AdminPage() {
               <td style={{ border: '1px solid #00ff00', padding: '8px' }}>
                 <button
                   onClick={() => updateRole(user.username)}
-                  style={{ marginRight: '10px', backgroundColor: '#00ff00', color: '#000', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
+                  style={{
+                    marginRight: '10px',
+                    backgroundColor: '#00ff00',
+                    color: '#000',
+                    border: 'none',
+                    padding: '5px 10px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold'
+                  }}
                 >
                   Rolü Güncelle
                 </button>
                 <button
                   onClick={() => deleteUser(user.username)}
-                  style={{ backgroundColor: '#ff0000', color: '#fff', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
+                  style={{
+                    backgroundColor: '#ff0000',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '5px 10px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold'
+                  }}
                 >
                   Kullanıcıyı Sil
                 </button>
@@ -119,17 +138,17 @@ export default function AdminPage() {
         </tbody>
       </table>
 
-      <h2 style={{ marginTop: '40px' }}>Loglar (Giriş/Çıkış Kayıtları)</h2>
+      <h2>Giriş/Çıkış Logları</h2>
       <div style={{
         backgroundColor: '#111',
-        color: '#0f0',
         padding: '15px',
-        marginTop: '10px',
-        maxHeight: '300px',
-        overflowY: 'scroll',
-        fontFamily: 'Courier New, monospace'
+        border: '1px solid #00ff00',
+        height: '300px',
+        overflowY: 'auto',
+        fontFamily: 'Courier New, monospace',
+        fontSize: '14px'
       }}>
-        {logs.map((log) => (
+        {logs.map(log => (
           <div key={log._id}>
             [{log.timestamp}] ➤ {log.username} ({log.type.toUpperCase()}) IP: {log.ip}
           </div>

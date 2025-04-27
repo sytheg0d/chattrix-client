@@ -236,3 +236,44 @@ body {
     gap: 10px;
   }
 }
+
+.admin-page {
+  padding: 30px;
+  color: #00ff00;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+}
+
+.admin-table th, .admin-table td {
+  border: 1px solid #00ff00;
+  padding: 8px;
+  text-align: center;
+}
+
+.admin-table button {
+  margin: 2px;
+  padding: 5px 10px;
+  background-color: #00ff00;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+}
+
+.admin-table button:hover {
+  background-color: #00cc00;
+}
+
+.logs-terminal {
+  background: #111;
+  padding: 15px;
+  border: 1px solid #00ff00;
+  height: 300px;
+  overflow-y: auto;
+  font-size: 14px;
+}
