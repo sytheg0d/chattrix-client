@@ -171,3 +171,44 @@ export default function AdminPage() {
     </div>
   );
 }
+
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../App.css';
+
+export default function AdminPage() {
+  const navigate = useNavigate();
+  const [token, setToken] = useState('');
+  const [error, setError] = useState(false);
+
+  // Doğru token ile giriş kontrolü
+  const handleSubmit = () => {
+    if (token === '159753456hang0ver') {
+      // Token doğruysa admin paneline geçiş yap
+      navigate('/admin-panel');
+    } else {
+      // Hatalı token
+      setError(true);
+    }
+  };
+
+  return (
+    <div style={{ padding: '20px', backgroundColor: '#000', color: '#00ff00', minHeight: '100vh' }}>
+      <h1>Admin Panel Girişi</h1>
+      
+      {/* Hata mesajı */}
+      {error && <div style={{ color: 'red' }}>Geçersiz token, tekrar deneyin.</div>}
+      
+      <input 
+        type="text" 
+        placeholder="Admin Panel Token'ı" 
+        value={token} 
+        onChange={(e) => setToken(e.target.value)} 
+        style={{ backgroundColor: '#111', color: '#00ff00', border: '1px solid #00ff00', padding: '10px', width: '100%' }} 
+      />
+      <button onClick={handleSubmit} style={{ marginTop: '10px', backgroundColor: '#00ff00', color: '#000', border: 'none', padding: '10px', cursor: 'pointer' }}>
+        Giriş Yap
+      </button>
+    </div>
+  );
+}
