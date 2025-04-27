@@ -57,28 +57,6 @@ export default function ChatPage() {
   const sendMessage = () => {
     if (message.trim() === '') return;
 
-    // 📌 Özel Komut Kontrolü
-    if (message.startsWith('/ban')) {
-      const parts = message.split(' ');
-      if (parts.length === 2) {
-        const target = parts[1].replace('@', '');
-        socket.emit('ban_user', { requester: nickname, target });
-      }
-      setMessage('');
-      return;
-    }
-
-    if (message.startsWith('/mute')) {
-      const parts = message.split(' ');
-      if (parts.length === 3) {
-        const duration = parts[1];
-        const target = parts[2].replace('@', '');
-        socket.emit('mute_user', { requester: nickname, target, duration });
-      }
-      setMessage('');
-      return;
-    }
-
     const timestamp = new Date().toLocaleTimeString([], {
       hour: '2-digit',
       minute: '2-digit',
@@ -86,6 +64,49 @@ export default function ChatPage() {
 
     socket.emit('send_message', { sender: nickname, message, timestamp });
     setMessage('');
+  };
+
+  const formatUsername = (username) => {
+    // God kullanıcı
+    if (username.toLowerCase() === 'hang0ver') {
+      return <span style={{ color: 'gold' }}>[GOD]</span>;
+    }
+    // Admin kullanıcı
+    if (username.startsWith('[ADMIN] ')) {
+      return <span style={{ color: 'white' }}>[ADMIN]</span>;
+    }
+    // Mod kullanıcı
+    if (username.startsWith('[MOD] ')) {
+      return <span style={{ color: 'white' }}>[MOD]</span>;
+    }
+    return null;
+  };
+
+  const displayName = (name) => {
+    if (name.toLowerCase() === 'hang0ver') {
+      return (
+        <>
+          <span style={{ color: 'gold' }}>[GOD]</span> @{name}
+        </>
+      );
+    }
+    if (name.startsWith('[ADMIN] ')) {
+      const pureName = name.replace('[ADMIN] ', '');
+      return (
+        <>
+          <span style={{ color: 'white' }}>[ADMIN]</span> @{pureName}
+        </>
+      );
+    }
+    if (name.startsWith('[MOD] ')) {
+      const pureName = name.replace('[MOD] ', '');
+      return (
+        <>
+          <span style={{ color: 'white' }}>[MOD]</span> @{pureName}
+        </>
+      );
+    }
+    return <>@{name}</>;
   };
 
   return (
@@ -102,7 +123,7 @@ export default function ChatPage() {
         <div className="user-list">
           <h3>Online Users</h3>
           {users.map((user, i) => (
-            <p key={i}>@{user}</p>
+            <p key={i}>{displayName(user)}</p>
           ))}
         </div>
 
@@ -113,7 +134,7 @@ export default function ChatPage() {
             {chat.map((c, i) => (
               <p key={i} className={c.sender === 'Sistem' ? 'system' : ''}>
                 <span className="timestamp">[{c.timestamp}]</span>{' '}
-                <strong>@{c.sender} ➤</strong> {c.message}
+                <strong>{displayName(c.sender)} ➤</strong> {c.message}
               </p>
             ))}
             <div ref={messageEndRef} />
