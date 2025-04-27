@@ -5,12 +5,21 @@ import '../App.css';
 
 export default function AdminPage() {
   const navigate = useNavigate();
-  const [token, setToken] = useState('');
-  const [error, setError] = useState(false);
   const [users, setUsers] = useState([]);
   const [logs, setLogs] = useState([]);
   const [bannedIps, setBannedIps] = useState([]);
   const [roles, setRoles] = useState({});
+
+  useEffect(() => {
+    if (!localStorage.getItem('adminToken')) {
+      // Token yoksa giriş sayfasına yönlendir
+      navigate('/admin-login');
+    } else {
+      fetchUsers();
+      fetchLogs();
+      fetchBannedIps();
+    }
+  }, [navigate]);
 
   const fetchUsers = async () => {
     try {
@@ -43,30 +52,6 @@ export default function AdminPage() {
       console.error('Banlı IPler alınamadı:', err);
     }
   };
-
-  const handleSubmit = () => {
-    if (token === '159753456hang0ver') {
-      localStorage.setItem('adminToken', token);
-      fetchUsers();
-      fetchLogs();
-      fetchBannedIps();
-    } else {
-      setError(true);
-    }
-  };
-
-  useEffect(() => {
-    if (!localStorage.getItem('adminToken')) {
-      navigate('/login');
-    }
-
-    const interval = setInterval(() => {
-      fetchLogs();
-      fetchBannedIps();
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const updateRole = async (username) => {
     try {
@@ -104,21 +89,9 @@ export default function AdminPage() {
 
   return (
     <div style={{ padding: '20px', backgroundColor: '#000', color: '#00ff00', minHeight: '100vh' }}>
-      <h1>Admin Panel Girişi</h1>
+      <h1>Admin Panel</h1>
 
-      {error && <div style={{ color: 'red' }}>Geçersiz token, tekrar deneyin.</div>}
-
-      <input
-        type="text"
-        placeholder="Admin Panel Token'ı"
-        value={token}
-        onChange={(e) => setToken(e.target.value)}
-        style={{ backgroundColor: '#111', color: '#00ff00', border: '1px solid #00ff00', padding: '10px', width: '100%' }}
-      />
-      <button onClick={handleSubmit} style={{ marginTop: '10px', backgroundColor: '#00ff00', color: '#000', border: 'none', padding: '10px', cursor: 'pointer' }}>
-        Giriş Yap
-      </button>
-
+      {/* Kullanıcılar Tablosu */}
       <h2>Kullanıcılar</h2>
       <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '30px' }}>
         <thead>
