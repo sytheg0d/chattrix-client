@@ -6,7 +6,7 @@ import { io } from 'socket.io-client';
 const socket = io(
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3001'
-    : 'https://chattrix-server.onrender.com'
+    : 'https://chattrix-2ur3.onrender.com'
 );
 
 export default function ChatPage() {
@@ -66,44 +66,41 @@ export default function ChatPage() {
     setMessage('');
   };
 
-  const formatUsername = (username) => {
-    if (username.toLowerCase() === 'hang0ver') {
-      return <span style={{ color: 'gold' }}>[GOD]</span>;
-    }
-    if (username.startsWith('[ADMIN] ')) {
-      return <span style={{ color: 'white' }}>[ADMIN]</span>;
-    }
-    if (username.startsWith('[MOD] ')) {
-      return <span style={{ color: 'white' }}>[MOD]</span>;
-    }
-    return null;
-  };
+  const displayName = (user) => {
+    if (!user) return null;
 
-  const displayName = (name) => {
-    if (name.toLowerCase() === 'hang0ver') {
+    let username = '';
+    let role = '';
+
+    if (typeof user === 'string') {
+      username = user;
+    } else if (typeof user === 'object') {
+      username = user.username;
+      role = user.role;
+    }
+
+    if (username.toLowerCase() === 'hang0ver') {
       return (
         <>
-          <span style={{ color: 'gold' }}>[GOD]</span> @{name}
+          <span style={{ color: 'gold' }}>[GOD]</span> @{username}
         </>
       );
     }
-    if (name.startsWith('[ADMIN] ')) {
-      const pureName = name.replace('[ADMIN] ', '');
+    if (role === 'admin') {
       return (
         <>
-          <span style={{ color: 'white' }}>[ADMIN]</span> @{pureName}
+          <span style={{ color: 'white' }}>[ADMIN]</span> @{username}
         </>
       );
     }
-    if (name.startsWith('[MOD] ')) {
-      const pureName = name.replace('[MOD] ', '');
+    if (role === 'moderator') {
       return (
         <>
-          <span style={{ color: 'white' }}>[MOD]</span> @{pureName}
+          <span style={{ color: 'white' }}>[MOD]</span> @{username}
         </>
       );
     }
-    return <>@{name}</>;
+    return <>@{username}</>;
   };
 
   return (
