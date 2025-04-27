@@ -5,14 +5,13 @@ import '../App.css';
 export default function AdminPage() {
   const [users, setUsers] = useState([]);
   const [logs, setLogs] = useState([]);
+  const [bannedIps, setBannedIps] = useState([]);
   const [roles, setRoles] = useState({});
 
-  // Kullanıcıları çek
   const fetchUsers = async () => {
     try {
       const res = await axios.get('https://chattrix-server.onrender.com/get-users');
       setUsers(res.data);
-
       const initialRoles = {};
       res.data.forEach(user => {
         initialRoles[user.username] = user.role;
@@ -23,7 +22,6 @@ export default function AdminPage() {
     }
   };
 
-  // Logları çek
   const fetchLogs = async () => {
     try {
       const res = await axios.get('https://chattrix-server.onrender.com/logs');
@@ -33,40 +31,61 @@ export default function AdminPage() {
     }
   };
 
+  const fetchBannedIps = async () => {
+    try {
+      const res = await axios.get('https://chattrix-server.onrender.com/banned-ips');
+      setBannedIps(res.data);
+    } catch (err) {
+      console.error('Banlı IPler alınamadı:', err);
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
     fetchLogs();
+    fetchBannedIps();
 
     const interval = setInterval(() => {
       fetchLogs();
-    }, 10000); // 10 saniyede bir logları yenile
+      fetchBannedIps();
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);
 
-  // Rol değiştirme
   const updateRole = async (username) => {
     try {
       await axios.post('https://chattrix-server.onrender.com/update-role', {
         username,
         newRole: roles[username]
       });
-      alert('Rol başarıyla güncellendi.');
+      alert('Rol güncellendi.');
       fetchUsers();
     } catch (err) {
       console.error('Rol güncellenemedi:', err);
     }
   };
 
-  // Kullanıcı silme
   const deleteUser = async (username) => {
-    if (window.confirm(`${username} adlı kullanıcıyı silmek istediğine emin misin?`)) {
+    if (window.confirm(`${username} adlı kullanıcıyı silmek istiyor musun?`)) {
       try {
         await axios.post('https://chattrix-server.onrender.com/delete-user', { username });
         alert('Kullanıcı silindi.');
         fetchUsers();
       } catch (err) {
         console.error('Kullanıcı silinemedi:', err);
+      }
+    }
+  };
+
+  const unbanIp = async (ip) => {
+    if (window.confirm(`${ip} IP adresinin banını kaldırmak istiyor musun?`)) {
+      try {
+        await axios.post('https://chattrix-server.onrender.com/unban-ip', { ip });
+        alert('Ban kaldırıldı.');
+        fetchBannedIps();
+      } catch (err) {
+        console.error('Ban kaldırılamadı:', err);
       }
     }
   };
@@ -81,7 +100,7 @@ export default function AdminPage() {
           <tr>
             <th style={{ border: '1px solid #00ff00', padding: '8px' }}>Kullanıcı Adı</th>
             <th style={{ border: '1px solid #00ff00', padding: '8px' }}>Rol</th>
-            <th style={{ border: '1px solid #00ff00', padding: '8px' }}>İşlemler</th>
+            <th style={{ border: '1px solid #00ff00', padding: '8px' }}>İşlem</th>
           </tr>
         </thead>
         <tbody>
@@ -92,12 +111,7 @@ export default function AdminPage() {
                 <select
                   value={roles[user.username] || 'user'}
                   onChange={(e) => setRoles({ ...roles, [user.username]: e.target.value })}
-                  style={{
-                    backgroundColor: '#000',
-                    color: '#00ff00',
-                    border: '1px solid #00ff00',
-                    padding: '5px'
-                  }}
+                  style={{ backgroundColor: '#000', color: '#00ff00', border: '1px solid #00ff00' }}
                 >
                   <option value="user">User</option>
                   <option value="moderator">Moderator</option>
@@ -107,28 +121,13 @@ export default function AdminPage() {
               <td style={{ border: '1px solid #00ff00', padding: '8px' }}>
                 <button
                   onClick={() => updateRole(user.username)}
-                  style={{
-                    marginRight: '10px',
-                    backgroundColor: '#00ff00',
-                    color: '#000',
-                    border: 'none',
-                    padding: '5px 10px',
-                    cursor: 'pointer',
-                    fontWeight: 'bold'
-                  }}
+                  style={{ marginRight: '10px', backgroundColor: '#00ff00', color: '#000', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
                 >
                   Rolü Güncelle
                 </button>
                 <button
                   onClick={() => deleteUser(user.username)}
-                  style={{
-                    backgroundColor: '#ff0000',
-                    color: '#fff',
-                    border: 'none',
-                    padding: '5px 10px',
-                    cursor: 'pointer',
-                    fontWeight: 'bold'
-                  }}
+                  style={{ backgroundColor: '#ff0000', color: '#fff', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
                 >
                   Kullanıcıyı Sil
                 </button>
@@ -138,13 +137,28 @@ export default function AdminPage() {
         </tbody>
       </table>
 
-      <h2>Giriş/Çıkış Logları</h2>
+      <h2>Banlı IP'ler</h2>
+      <div style={{ marginBottom: '30px', backgroundColor: '#111', padding: '15px', border: '1px solid #00ff00', maxHeight: '200px', overflowY: 'auto' }}>
+        {bannedIps.map(ip => (
+          <div key={ip._id} style={{ marginBottom: '10px' }}>
+            {ip.ip}
+            <button
+              onClick={() => unbanIp(ip.ip)}
+              style={{ marginLeft: '10px', backgroundColor: '#ff0000', color: '#fff', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
+            >
+              Banı Kaldır
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <h2>Giriş / Çıkış Logları</h2>
       <div style={{
         backgroundColor: '#111',
         padding: '15px',
         border: '1px solid #00ff00',
-        height: '300px',
-        overflowY: 'auto',
+        maxHeight: '300px',
+        overflowY: 'scroll',
         fontFamily: 'Courier New, monospace',
         fontSize: '14px'
       }}>

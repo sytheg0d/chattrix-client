@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import '../App.css';
 import { io } from 'socket.io-client';
 
-// ✅ Dinamik socket bağlantısı
 const socket = io(
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3001'
@@ -56,15 +55,37 @@ export default function ChatPage() {
   }, [chat]);
 
   const sendMessage = () => {
-    if (message.trim() !== '') {
-      const timestamp = new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
+    if (message.trim() === '') return;
 
-      socket.emit('send_message', { sender: nickname, message, timestamp });
+    // 📌 Özel Komut Kontrolü
+    if (message.startsWith('/ban')) {
+      const parts = message.split(' ');
+      if (parts.length === 2) {
+        const target = parts[1].replace('@', '');
+        socket.emit('ban_user', { requester: nickname, target });
+      }
       setMessage('');
+      return;
     }
+
+    if (message.startsWith('/mute')) {
+      const parts = message.split(' ');
+      if (parts.length === 3) {
+        const duration = parts[1];
+        const target = parts[2].replace('@', '');
+        socket.emit('mute_user', { requester: nickname, target, duration });
+      }
+      setMessage('');
+      return;
+    }
+
+    const timestamp = new Date().toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    socket.emit('send_message', { sender: nickname, message, timestamp });
+    setMessage('');
   };
 
   return (
