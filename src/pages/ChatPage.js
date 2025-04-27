@@ -55,7 +55,7 @@ export default function ChatPage() {
   }, [chat]);
 
   const sendMessage = () => {
-    if (message.trim() === '') return;
+    if (!message.trim()) return;
 
     const timestamp = new Date().toLocaleTimeString([], {
       hour: '2-digit',
@@ -66,19 +66,6 @@ export default function ChatPage() {
     setMessage('');
   };
 
-  const formatUsername = (username) => {
-    if (username.toLowerCase() === 'hang0ver') {
-      return <span style={{ color: 'gold' }}>[GOD]</span>;
-    }
-    if (username.startsWith('[ADMIN] ')) {
-      return <span style={{ color: 'white' }}>[ADMIN]</span>;
-    }
-    if (username.startsWith('[MOD] ')) {
-      return <span style={{ color: 'white' }}>[MOD]</span>;
-    }
-    return null;
-  };
-  
   const displayName = (name) => {
     if (name.toLowerCase() === 'hang0ver') {
       return (

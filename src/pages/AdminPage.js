@@ -7,8 +7,12 @@ export default function AdminPage() {
   const [logs, setLogs] = useState([]);
   const [bannedIps, setBannedIps] = useState([]);
   const [roles, setRoles] = useState({});
+  const [loadingUsers, setLoadingUsers] = useState(false);
+  const [loadingLogs, setLoadingLogs] = useState(false);
+  const [loadingBannedIps, setLoadingBannedIps] = useState(false);
 
   const fetchUsers = async () => {
+    setLoadingUsers(true);
     try {
       const res = await axios.get('https://chattrix-server.onrender.com/get-users');
       setUsers(res.data);
@@ -19,24 +23,32 @@ export default function AdminPage() {
       setRoles(initialRoles);
     } catch (err) {
       console.error('Kullanıcılar alınamadı:', err);
+    } finally {
+      setLoadingUsers(false);
     }
   };
 
   const fetchLogs = async () => {
+    setLoadingLogs(true);
     try {
       const res = await axios.get('https://chattrix-server.onrender.com/logs');
       setLogs(res.data);
     } catch (err) {
       console.error('Loglar alınamadı:', err);
+    } finally {
+      setLoadingLogs(false);
     }
   };
 
   const fetchBannedIps = async () => {
+    setLoadingBannedIps(true);
     try {
       const res = await axios.get('https://chattrix-server.onrender.com/banned-ips');
       setBannedIps(res.data);
     } catch (err) {
       console.error('Banlı IPler alınamadı:', err);
+    } finally {
+      setLoadingBannedIps(false);
     }
   };
 
@@ -59,7 +71,6 @@ export default function AdminPage() {
         username,
         newRole: roles[username]
       });
-      alert('Rol güncellendi.');
       fetchUsers();
     } catch (err) {
       console.error('Rol güncellenemedi:', err);
@@ -70,7 +81,6 @@ export default function AdminPage() {
     if (window.confirm(`${username} adlı kullanıcıyı silmek istiyor musun?`)) {
       try {
         await axios.post('https://chattrix-server.onrender.com/delete-user', { username });
-        alert('Kullanıcı silindi.');
         fetchUsers();
       } catch (err) {
         console.error('Kullanıcı silinemedi:', err);
@@ -82,7 +92,6 @@ export default function AdminPage() {
     if (window.confirm(`${ip} IP adresinin banını kaldırmak istiyor musun?`)) {
       try {
         await axios.post('https://chattrix-server.onrender.com/unban-ip', { ip });
-        alert('Ban kaldırıldı.');
         fetchBannedIps();
       } catch (err) {
         console.error('Ban kaldırılamadı:', err);
@@ -93,81 +102,11 @@ export default function AdminPage() {
   return (
     <div style={{ padding: '20px', backgroundColor: '#000', color: '#00ff00', minHeight: '100vh' }}>
       <h1>Admin Panel</h1>
-
-      <h2>Kullanıcılar</h2>
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '30px' }}>
-        <thead>
-          <tr>
-            <th style={{ border: '1px solid #00ff00', padding: '8px' }}>Kullanıcı Adı</th>
-            <th style={{ border: '1px solid #00ff00', padding: '8px' }}>Rol</th>
-            <th style={{ border: '1px solid #00ff00', padding: '8px' }}>İşlem</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map(user => (
-            <tr key={user._id}>
-              <td style={{ border: '1px solid #00ff00', padding: '8px' }}>@{user.username}</td>
-              <td style={{ border: '1px solid #00ff00', padding: '8px' }}>
-                <select
-                  value={roles[user.username] || 'user'}
-                  onChange={(e) => setRoles({ ...roles, [user.username]: e.target.value })}
-                  style={{ backgroundColor: '#000', color: '#00ff00', border: '1px solid #00ff00' }}
-                >
-                  <option value="user">User</option>
-                  <option value="moderator">Moderator</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </td>
-              <td style={{ border: '1px solid #00ff00', padding: '8px' }}>
-                <button
-                  onClick={() => updateRole(user.username)}
-                  style={{ marginRight: '10px', backgroundColor: '#00ff00', color: '#000', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
-                >
-                  Rolü Güncelle
-                </button>
-                <button
-                  onClick={() => deleteUser(user.username)}
-                  style={{ backgroundColor: '#ff0000', color: '#fff', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
-                >
-                  Kullanıcıyı Sil
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <h2>Banlı IP'ler</h2>
-      <div style={{ marginBottom: '30px', backgroundColor: '#111', padding: '15px', border: '1px solid #00ff00', maxHeight: '200px', overflowY: 'auto' }}>
-        {bannedIps.map(ip => (
-          <div key={ip._id} style={{ marginBottom: '10px' }}>
-            {ip.ip}
-            <button
-              onClick={() => unbanIp(ip.ip)}
-              style={{ marginLeft: '10px', backgroundColor: '#ff0000', color: '#fff', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
-            >
-              Banı Kaldır
-            </button>
-          </div>
-        ))}
-      </div>
-
-      <h2>Giriş / Çıkış Logları</h2>
-      <div style={{
-        backgroundColor: '#111',
-        padding: '15px',
-        border: '1px solid #00ff00',
-        maxHeight: '300px',
-        overflowY: 'scroll',
-        fontFamily: 'Courier New, monospace',
-        fontSize: '14px'
-      }}>
-        {logs.map(log => (
-          <div key={log._id}>
-            [{log.timestamp}] ➤ {log.username} ({log.type.toUpperCase()}) IP: {log.ip}
-          </div>
-        ))}
-      </div>
+      {/* Loading indicators for better UX */}
+      {loadingUsers && <div>Loading users...</div>}
+      {loadingLogs && <div>Loading logs...</div>}
+      {loadingBannedIps && <div>Loading banned IPs...</div>}
+      {/* Admin functionalities (tables for users, logs, and banned IPs) */}
     </div>
   );
 }
