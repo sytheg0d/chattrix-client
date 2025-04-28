@@ -270,3 +270,93 @@ body {
     gap: 10px;
   }
 }
+
+.login-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.logo {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #00ff00;
+}
+
+.warning {
+  font-size: 16px;
+  color: #ff0000; /* Kırmızı uyarı rengi */
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Giriş inputları */
+.login-container input {
+  width: 250px;
+  padding: 10px;
+  margin: 8px 0;
+  background: #000;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  font-size: 16px;
+  outline: none;
+}
+
+.login-container input::placeholder {
+  color: #00aa00;
+}
+
+/* Giriş - Kayıt butonları */
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.button-group button {
+  background: transparent;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.button-group button:hover {
+  background: #00ff00;
+  color: #000;
+}
+
+/* Butonlarda yumuşak hover animasyonu */
+.button-group button, 
+.chat-input button, 
+.upload-icon {
+  transition: all 0.3s ease;
+}
+
+/* Login inputları ve mesaj inputları hafif parlayan görünüm */
+.login-container input, 
+.chat-input input, 
+.message-input {
+  box-shadow: 0 0 5px #00ff00aa;
+  transition: box-shadow 0.3s ease;
+}
+
+.login-container input:focus,
+.chat-input input:focus,
+.message-input:focus {
+  box-shadow: 0 0 10px #00ff00;
+}
+
+/* Giriş/Kayıt butonlarına hover'da hafif büyüme efekti */
+.button-group button:hover, 
+.chat-input button:hover, 
+.upload-icon:hover {
+  transform: scale(1.05);
+}
