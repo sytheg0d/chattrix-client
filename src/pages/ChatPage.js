@@ -32,7 +32,8 @@ export default function ChatPage() {
     });
 
     socket.on('update_users', (userList) => {
-      setUsers(userList);
+      console.log("Gelen Kullanıcı Listesi: ", userList);  // Debugging: Verinin doğru şekilde geldiğini kontrol edin
+      setUsers(userList);  // Online kullanıcıları state'e set et
     });
 
     const handleBeforeUnload = () => {
@@ -166,9 +167,13 @@ export default function ChatPage() {
       <div className="main-section">
         <div className="user-list">
           <h3>Online Users</h3>
-          {users.map((user, i) => (
-            <p key={i}>{displayName(user)}</p>
-          ))}
+          {users.length === 0 ? (
+            <p>No users online</p>  // Eğer kullanıcı yoksa, boş mesaj göster
+          ) : (
+            users.map((user, i) => (
+              <p key={i}>{displayName(user)}</p>
+            ))
+          )}
         </div>
 
         <div className="chat-section">

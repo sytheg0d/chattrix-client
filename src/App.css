@@ -44,9 +44,32 @@ body {
   padding: 20px;
   border-right: 2px solid #00ff00;
   background: #0a0a0a;
-  overflow-y: auto;
-  max-height: calc(100vh - 150px); /* Kullanıcı listesi için ekran boyutu */
-  transition: all 0.3s ease; /* Kullanıcı liste geçişi */
+  overflow-y: auto;  /* Scroll bar özelliği */
+  max-height: calc(100vh - 150px); /* Kullanıcılar alanının yüksekliğini sınırlıyoruz */
+  transition: all 0.3s ease; /* Geçiş animasyonu */
+  visibility: visible; /* Görünürlük kontrolü */
+}
+
+.user-list h3 {
+  margin-top: 0;
+}
+
+/* Scroll bar'ı özelleştirelim */
+.user-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.user-list::-webkit-scrollbar-track {
+  background: #111;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+  background: #00ff00;
+  border-radius: 4px;
+}
+
+.user-list::-webkit-scrollbar-thumb:hover {
+  background: #00cc00;
 }
 
 .user-list h3 {
@@ -207,13 +230,15 @@ body {
     flex-direction: column;
   }
 
+  /* Küçük ekranlar için düzenleme */
+@media (max-width: 768px) {
   .user-list {
-    width: 100%;
-    border-right: none;
-    border-bottom: 2px solid #00ff00;
-    padding: 10px;
+    width: 100%; /* Tam genişlik */
+    border-right: none; /* Sağ sınır kaldırılır */
+    border-bottom: 2px solid #00ff00; /* Alt sınır eklenir */
+    padding: 10px; /* İç boşluk ayarı */
   }
-
+}
   .chat-section {
     padding: 10px;
   }
