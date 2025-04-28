@@ -38,18 +38,6 @@ body {
   overflow: hidden;
 }
 
-/* Sol kullanıcı listesi */
-.user-list {
-  width: 250px;
-  padding: 20px;
-  border-right: 2px solid #00ff00;
-  background: #0a0a0a;
-  overflow-y: auto;  /* Scroll bar özelliği */
-  max-height: calc(100vh - 150px); /* Kullanıcılar alanının yüksekliğini sınırlıyoruz */
-  transition: all 0.3s ease; /* Geçiş animasyonu */
-  visibility: visible; /* Görünürlük kontrolü */
-}
-
 .user-list h3 {
   margin-top: 0;
 }
