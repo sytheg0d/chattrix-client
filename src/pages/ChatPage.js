@@ -153,13 +153,15 @@ export default function ChatPage() {
           <h3>Global Chat</h3>
 
           <div className="chat-messages">
-            {chat.map((c, i) => (
-              <p key={i} className={c.sender === 'Sistem' ? 'system' : ''}>
-                <span className="timestamp">[{c.timestamp}]</span>{' '}
-                <strong>{displayMessageSender(c.sender)} ➤</strong> {c.message}
-              </p>
-            ))}
-            <div ref={messageEndRef} />
+            <div className="messages-container">
+              {chat.map((c, i) => (
+                <p key={i} className={c.sender === 'Sistem' ? 'system' : ''}>
+                  <span className="timestamp">[{c.timestamp}]</span>{' '}
+                  <strong>{displayMessageSender(c.sender)} ➤</strong> {c.message}
+                </p>
+              ))}
+              <div ref={messageEndRef} />
+            </div>
           </div>
 
           <div className="chat-input">

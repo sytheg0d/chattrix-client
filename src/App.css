@@ -72,10 +72,20 @@ body {
 }
 
 .user-list p {
-  margin: 10px 0;
-  font-size: 16px;
+  background: #000;
+  border: 1px solid #00ff00;
+  padding: 8px 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  font-size: 15px;
   color: #00ff00;
+  transition: background 0.3s, color 0.3s;
   word-break: break-word;
+}
+
+.user-list p:hover {
+  background: #00ff00;
+  color: #000;
 }
 
 /* Chat alanı */
@@ -389,4 +399,38 @@ table tbody tr:nth-child(odd) {
   font-size: 14px;
   color: #00ff00;
   font-weight: bold;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  max-height: calc(100vh - 150px); /* Üst bar ve input alanı bırakıldı */
+}
+
+/* Scroll bar görünümü */
+.chat-messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: #111;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #00ff00;
+  border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #00cc00;
+}
+
+.messages-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
