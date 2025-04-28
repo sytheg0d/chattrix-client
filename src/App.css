@@ -1,4 +1,3 @@
-
 body {
   margin: 0;
   background-color: #000;
@@ -45,6 +44,9 @@ body {
   padding: 20px;
   border-right: 2px solid #00ff00;
   background: #0a0a0a;
+  overflow-y: auto;
+  max-height: calc(100vh - 150px); /* Kullanıcı listesi için ekran boyutu */
+  transition: all 0.3s ease; /* Kullanıcı liste geçişi */
 }
 
 .user-list h3 {
@@ -71,6 +73,8 @@ body {
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
+  max-height: calc(100vh - 200px); /* Ekran boyutuna göre ayar yap */
+  overflow-y: scroll; /* Scroll bar sorunu çözümü */
 }
 
 /* Scrollbar düzenleme */
@@ -237,6 +241,7 @@ body {
   }
 }
 
+/* Admin paneli */
 .admin-page {
   padding: 30px;
   color: #00ff00;
@@ -330,6 +335,7 @@ table tbody tr:nth-child(odd) {
   background-color: #333;
 }
 
+/* Chat input düzeni */
 .chat-input {
   display: flex;
   align-items: center;
@@ -380,11 +386,11 @@ table tbody tr:nth-child(odd) {
   background: #00cc00;
 }
 
+/* Help komutunu alt alta listele */
 .help-message {
-  display: flex;
-  flex-wrap: wrap; /* Alt alta gelmesin, sığarsa sıraya geçsin */
+  display: block; /* Alt alta sıralama */
   gap: 15px;
   font-size: 14px;
-  color: #00ff00; /* İstediğiniz renk */
+  color: #00ff00; /* Yeşil renkte */
   font-weight: bold;
 }
