@@ -175,7 +175,16 @@ export default function ChatPage() {
               {chat.map((c, i) => (
                 <p key={i} className={c.sender === 'Sistem' ? 'system' : ''}>
                   <span className="timestamp">[{c.timestamp}]</span>{' '}
-                  <strong>{displayMessageSender(c.sender)} ➤</strong> {c.message}
+                  <strong>{displayMessageSender(c.sender)} ➤</strong>{' '}
+                  {c.message.startsWith('data:image') ? (
+                    <img
+                      src={c.message}
+                      alt="gönderilen resim"
+                      style={{ maxWidth: '300px', maxHeight: '300px', border: '1px solid #00ff00', marginTop: '5px' }}
+                    />
+                  ) : (
+                    <span>{c.message}</span>
+                  )}
                 </p>
               ))}
               <div ref={messageEndRef} />
