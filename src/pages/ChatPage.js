@@ -27,21 +27,12 @@ export default function ChatPage() {
 
     socket.emit('join', nickname);
 
-    // Mesajları alma
     socket.on('receive_message', (data) => {
       setChat((prev) => [...prev, data]);
     });
 
-    // Online kullanıcı listesini alma ve state'e aktarma
     socket.on('update_users', (userList) => {
-      console.log("Gelen Kullanıcı Listesi: ", userList);  // Debugging: Verinin doğru şekilde geldiğini kontrol edin
-      setUsers((prevUsers) => {
-        // Prevent overwriting if the user list is already correct
-        if (JSON.stringify(prevUsers) !== JSON.stringify(userList)) {
-          return userList;
-        }
-        return prevUsers;
-      });
+      setUsers(userList);
     });
 
     const handleBeforeUnload = () => {
@@ -64,17 +55,6 @@ export default function ChatPage() {
     }
   }, [chat]);
 
-  const getUserTheme = (sender) => {
-    const activeTheme = JSON.parse(localStorage.getItem('activeTheme'));
-    if (!activeTheme) return null;
-
-    if (sender === nickname) {
-      return activeTheme;
-    }
-
-    return null;
-  };
-
   const sendMessage = () => {
     if (message.trim() === '') return;
 
@@ -83,15 +63,7 @@ export default function ChatPage() {
       minute: '2-digit',
     });
 
-    const activeTheme = JSON.parse(localStorage.getItem('activeTheme')) || null;
-
-    socket.emit('send_message', { 
-      sender: nickname, 
-      message, 
-      timestamp,
-      theme: activeTheme // Temayı da gönderiyoruz
-    });
-
+    socket.emit('send_message', { sender: nickname, message, timestamp });
     setMessage('');
   };
 
@@ -106,13 +78,10 @@ export default function ChatPage() {
         minute: '2-digit',
       });
 
-      const activeTheme = JSON.parse(localStorage.getItem('activeTheme')) || null;
-
       socket.emit('send_message', {
         sender: nickname,
         message: `data:${file.type};base64,${imageBase64}`,
         timestamp,
-        theme: activeTheme // Resim gönderirken de temayı ekliyoruz
       });
     };
     reader.readAsDataURL(file);
@@ -167,55 +136,29 @@ export default function ChatPage() {
       <div className="top-header">
         <div className="logo">CHATTRIX</div>
         <div className="menu">
-          <span onClick={() => navigate('/market')}>Global Market</span>
-          <span onClick={() => navigate('/profile')}>Profil</span>
+          <span>Global Market</span>
+          <span>Profil</span>
         </div>
       </div>
 
       <div className="main-section">
         <div className="user-list">
           <h3>Online Users</h3>
-          {users.length === 0 ? (
-            <p>No users online</p>  // Eğer kullanıcı yoksa, boş mesaj göster
-          ) : (
-            users.map((user, i) => (
-              <p key={i}>{displayName(user)}</p>
-            ))
-          )}
+          {users.map((user, i) => (
+            <p key={i}>{displayName(user)}</p>
+          ))}
         </div>
 
         <div className="chat-section">
           <h3>Global Chat</h3>
 
           <div className="chat-messages">
-            {chat.map((c, i) => {
-              const theme = c.theme || null; // Gelen mesajdaki tema bilgisi
-
-              return (
-                <p 
-                  key={i} 
-                  className={c.sender === 'Sistem' ? 'system' : ''}
-                  style={ 
-                    theme === 'rainbow' ? {
-                      background: 'linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      fontWeight: 'bold'
-                    } 
-                    : theme === 'white' ? {
-                      color: '#ffffff'
-                    } 
-                    : theme === 'lightblue' ? {
-                      color: '#00ccff'
-                    } 
-                    : {}
-                  }
-                >
-                  <span className="timestamp">[{c.timestamp}]</span>{' '}
-                  <strong>{displayMessageSender(c.sender)} ➤</strong> {c.message}
-                </p>
-              );
-            })}
+            {chat.map((c, i) => (
+              <p key={i} className={c.sender === 'Sistem' ? 'system' : ''}>
+                <span className="timestamp">[{c.timestamp}]</span>{' '}
+                <strong>{displayMessageSender(c.sender)} ➤</strong> {c.message}
+              </p>
+            ))}
             <div ref={messageEndRef} />
           </div>
 
