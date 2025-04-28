@@ -120,10 +120,28 @@ export default function ChatPage() {
   const displayMessageSender = (sender) => {
     if (!sender) return null;
 
+    const user = users.find((u) => u.username === sender);
+
     if (sender.toLowerCase() === 'hang0ver') {
       return (
         <>
           <span style={{ color: 'gold' }}>[GOD]</span> @{sender}
+        </>
+      );
+    }
+
+    if (user?.role === 'admin') {
+      return (
+        <>
+          <span style={{ color: 'white' }}>[ADMIN]</span> @{sender}
+        </>
+      );
+    }
+
+    if (user?.role === 'moderator') {
+      return (
+        <>
+          <span style={{ color: 'white' }}>[MOD]</span> @{sender}
         </>
       );
     }
@@ -142,7 +160,6 @@ export default function ChatPage() {
       </div>
 
       <div className="main-section">
-        {/* SOL: Kullanıcı listesi */}
         <div className="user-list">
           <h3>Online Users</h3>
           {users.map((user, i) => (
@@ -150,7 +167,6 @@ export default function ChatPage() {
           ))}
         </div>
 
-        {/* SAĞ: Chat bölümü */}
         <div className="chat-section">
           <h3>Global Chat</h3>
 
