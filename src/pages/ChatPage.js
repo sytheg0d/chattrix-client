@@ -27,13 +27,21 @@ export default function ChatPage() {
 
     socket.emit('join', nickname);
 
+    // Mesajları alma
     socket.on('receive_message', (data) => {
       setChat((prev) => [...prev, data]);
     });
 
+    // Online kullanıcı listesini alma ve state'e aktarma
     socket.on('update_users', (userList) => {
       console.log("Gelen Kullanıcı Listesi: ", userList);  // Debugging: Verinin doğru şekilde geldiğini kontrol edin
-      setUsers(userList);  // Online kullanıcıları state'e set et
+      setUsers((prevUsers) => {
+        // Prevent overwriting if the user list is already correct
+        if (JSON.stringify(prevUsers) !== JSON.stringify(userList)) {
+          return userList;
+        }
+        return prevUsers;
+      });
     });
 
     const handleBeforeUnload = () => {
