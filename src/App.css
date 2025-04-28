@@ -330,3 +330,52 @@ table tbody tr:nth-child(odd) {
   background-color: #333;
 }
 
+.chat-input {
+  display: flex;
+  align-items: center;
+  border-top: 2px solid #00ff00;
+  padding: 10px 0 0 0;
+}
+
+.upload-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  border: 1px solid #00ff00;
+  padding: 10px;
+  margin-right: 8px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.upload-icon:hover {
+  background: #00ff00;
+  color: #000;
+}
+
+.message-input {
+  flex: 1;
+  padding: 10px;
+  background: #000;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  outline: none;
+  font-size: 16px;
+}
+
+.send-button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  background: #00ff00;
+  color: #000;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.send-button:hover {
+  background: #00cc00;
+}
