@@ -379,3 +379,12 @@ table tbody tr:nth-child(odd) {
 .send-button:hover {
   background: #00cc00;
 }
+
+.help-message {
+  display: flex;
+  flex-wrap: wrap; /* Alt alta gelmesin, sığarsa sıraya geçsin */
+  gap: 15px;
+  font-size: 14px;
+  color: #00ff00; /* İstediğiniz renk */
+  font-weight: bold;
+}

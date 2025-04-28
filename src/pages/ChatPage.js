@@ -158,8 +158,8 @@ export default function ChatPage() {
       <div className="top-header">
         <div className="logo">CHATTRIX</div>
         <div className="menu">
-          <span>Global Market</span>
-          <span>Profil</span>
+          <span onClick={() => navigate('/market')}>Global Market</span>
+          <span onClick={() => navigate('/profile')}>Profil</span>
         </div>
       </div>
 
@@ -182,19 +182,19 @@ export default function ChatPage() {
                 <p 
                   key={i} 
                   className={c.sender === 'Sistem' ? 'system' : ''}
-                  style={
+                  style={ 
                     theme === 'rainbow' ? {
                       background: 'linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet)',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
                       fontWeight: 'bold'
-                    }
+                    } 
                     : theme === 'white' ? {
                       color: '#ffffff'
-                    }
+                    } 
                     : theme === 'lightblue' ? {
                       color: '#00ccff'
-                    }
+                    } 
                     : {}
                   }
                 >
