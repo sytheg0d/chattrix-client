@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../App.css';
 import { io } from 'socket.io-client';
-import { Plus } from 'lucide-react'; // + simgesi için
+import { Plus } from 'lucide-react';
 
 const socket = io(
   process.env.NODE_ENV === 'development'
@@ -142,6 +142,7 @@ export default function ChatPage() {
       </div>
 
       <div className="main-section">
+        {/* SOL: Kullanıcı listesi */}
         <div className="user-list">
           <h3>Online Users</h3>
           {users.map((user, i) => (
@@ -149,6 +150,7 @@ export default function ChatPage() {
           ))}
         </div>
 
+        {/* SAĞ: Chat bölümü */}
         <div className="chat-section">
           <h3>Global Chat</h3>
 
