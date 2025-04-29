@@ -16,9 +16,6 @@ export default function ChatPage() {
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
   const [users, setUsers] = useState([]);
-  const [marketVisible, setMarketVisible] = useState(false);
-  const [marketItems, setMarketItems] = useState({});
-  const [userTheme, setUserTheme] = useState('default');
   const nickname = location.state?.nickname;
   const messageEndRef = useRef(null);
 
@@ -37,8 +34,6 @@ export default function ChatPage() {
     socket.on('update_users', (userList) => {
       setUsers(userList);
     });
-
-    fetchUserTheme();
 
     const handleBeforeUnload = () => {
       socket.emit('logout', nickname);
@@ -59,19 +54,6 @@ export default function ChatPage() {
       messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [chat]);
-
-  const fetchUserTheme = async () => {
-    try {
-      const response = await fetch('https://chattrix-2ur3.onrender.com/get-users');
-      const users = await response.json();
-      const currentUser = users.find((u) => u.username === nickname);
-      if (currentUser && currentUser.currentTheme) {
-        setUserTheme(currentUser.currentTheme);
-      }
-    } catch (err) {
-      console.error('Kullanıcı teması çekilemedi:', err);
-    }
-  };
 
   const sendMessage = () => {
     if (message.trim() === '') return;
@@ -167,54 +149,13 @@ export default function ChatPage() {
     return <>@{sender}</>;
   };
 
-  const fetchMarket = async () => {
-    try {
-      const response = await fetch('https://chattrix-2ur3.onrender.com/market');
-      const data = await response.json();
-      setMarketItems(data);
-      setMarketVisible(true);
-    } catch (err) {
-      console.error('Market çekilemedi:', err);
-    }
-  };
-
-  const buyTheme = async (theme) => {
-    try {
-      const response = await fetch('https://chattrix-2ur3.onrender.com/buy-theme', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: nickname, theme }),
-      });
-      const result = await response.json();
-      alert(result.message || 'Satın alma işlemi tamamlandı.');
-      if (result.success) {
-        setUserTheme(theme); // Satın aldıysa güncelle
-      }
-    } catch (err) {
-      console.error('Tema satın alma hatası:', err);
-    }
-  };
-
-  const getMessageStyle = (theme) => {
-    if (theme === 'rainbow') {
-      return {
-        background: 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)',
-        WebkitBackgroundClip: 'text',
-        color: 'transparent',
-      };
-    }
-    if (theme === 'lightblue') return { color: 'lightblue' };
-    if (theme === 'white') return { color: 'white' };
-    return { color: '#00ff00' }; // Default hacker yeşili
-  };
-
   return (
     <div className="chat-layout">
       <div className="top-header">
         <div className="logo">CHATTRIX</div>
         <div className="menu">
-          <span onClick={fetchMarket} style={{ cursor: 'pointer' }}>Global Market</span>
-          <span style={{ cursor: 'pointer' }}>Profil</span>
+         <span onClick={() => navigate('/market')} style={{ cursor: 'pointer' }}>Global Market</span>
+         <span onClick={() => navigate('/profile')} style={{ cursor: 'pointer', color: '#00ff00' }}>Profil</span>
         </div>
       </div>
 
@@ -232,11 +173,7 @@ export default function ChatPage() {
           <div className="chat-messages">
             <div className="messages-container">
               {chat.map((c, i) => (
-                <p
-                  key={i}
-                  className={c.sender === 'Sistem' ? 'system' : ''}
-                  style={c.sender === 'Sistem' ? { color: 'red' } : getMessageStyle(c.theme)}
-                >
+                <p key={i} className={c.sender === 'Sistem' ? 'system' : ''}>
                   <span className="timestamp">[{c.timestamp}]</span>{' '}
                   <strong>{displayMessageSender(c.sender)} ➤</strong>{' '}
                   {c.message.startsWith('data:image') ? (
@@ -279,23 +216,6 @@ export default function ChatPage() {
           </div>
         </div>
       </div>
-
-      {marketVisible && (
-        <div className="market-popup">
-          <div className="market-content">
-            <h3>Global Market</h3>
-            <button onClick={() => setMarketVisible(false)}>Kapat</button>
-            {Object.entries(marketItems).map(([key, item], idx) => (
-              <div key={idx} className="market-item">
-                <h4>{key.toUpperCase()}</h4>
-                <p>{item.description}</p>
-                <p>Fiyat: {item.price} kredi</p>
-                <button onClick={() => buyTheme(key)}>Satın Al</button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
