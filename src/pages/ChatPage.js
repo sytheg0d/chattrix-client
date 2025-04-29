@@ -36,19 +36,21 @@ export default function ChatPage() {
       setUsers(userList);
     });
 
-    const handleBeforeUnload = () => {
-      socket.emit('logout', nickname);
-    };
-
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      socket.emit('logout', nickname);
       socket.off('receive_message');
       socket.off('update_users');
     };
   }, [nickname, navigate]);
+
+  const handleBeforeUnload = () => {
+    // Siteyi kapatırken sadece kullanıcıyı offline yapıyoruz.
+    if (nickname) {
+      socket.emit('logout', nickname);
+    }
+  };
 
   useEffect(() => {
     if (messageEndRef.current) {
@@ -89,8 +91,9 @@ export default function ChatPage() {
   };
 
   const logout = () => {
-    localStorage.removeItem('nickname');
-    navigate('/login');
+    socket.emit('logout', nickname); // Gerçekten socketten çıkış sinyali gönder
+    localStorage.removeItem('nickname'); // nickname bilgisini temizle
+    navigate('/login'); // login sayfasına yönlendir
   };
 
   const displayName = (user) => {
