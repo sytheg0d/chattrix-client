@@ -1,86 +1,59 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../App.css';
+import '../App.css'; // Tema stilleri burada tanımlıysa
 
-export default function MarketPage() {
-  const navigate = useNavigate();
+export default function Market() {
   const [themes, setThemes] = useState({});
   const [userCredits, setUserCredits] = useState(0);
-  const [loading, setLoading] = useState(true);
-
-  const nickname = JSON.parse(localStorage.getItem('nickname')) || null;
+  const [nickname, setNickname] = useState('');
 
   useEffect(() => {
-    if (!nickname) {
-      navigate('/login');
-      return;
-    }
-    fetchMarket();
-    fetchUserCredits();
+    // Kullanıcının nickname'ini ve kredilerini localStorage'dan veya başka yerden al
+    const storedNickname = localStorage.getItem('nickname');
+    const storedCredits = parseInt(localStorage.getItem('credits'), 10);
+    setNickname(storedNickname || '');
+    setUserCredits(storedCredits || 0);
+
+    // Market verisini çek
+    axios.get('https://chattrix-server.onrender.com/market')
+      .then(res => {
+        setThemes(res.data);
+      })
+      .catch(err => {
+        console.error('❌ Market verisi çekilemedi:', err);
+      });
   }, []);
 
-  const fetchMarket = async () => {
-    try {
-      const res = await axios.get('https://chattrix-server.onrender.com/market');
-      setThemes(res.data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Market verileri alınamadı:', error);
-      setLoading(false);
-    }
-  };
-
-  const fetchUserCredits = async () => {
-    try {
-      const res = await axios.get('https://chattrix-server.onrender.com/get-users');
-      const user = res.data.find(u => u.username === nickname);
-      if (user) setUserCredits(user.credits);
-    } catch (error) {
-      console.error('Kullanıcı kredisi alınamadı:', error);
-    }
-  };
-
-  const buyTheme = async (themeName) => {
-    try {
-      const res = await axios.post('https://chattrix-server.onrender.com/buy-theme', {
-        username: nickname,
-        theme: themeName
-      });
-  
-      if (res.data.success) {
-        alert(res.data.message);
-        fetchUserCredits(); // Kredi güncellemesi
-        localStorage.setItem('activeTheme', JSON.stringify(themeName)); // Aktif temayı kaydet
-      } else {
-        alert(res.data.message);
-      }
-    } catch (err) {
-      console.error('Tema satın alma hatası:', err);
+  const buyTheme = (themeName) => {
+    axios.post('https://chattrix-server.onrender.com/buy-theme', {
+      username: nickname,
+      theme: themeName
+    })
+    .then(res => {
+      alert(res.data.message);
+      setUserCredits(prev => prev - themes[themeName].price); // Krediden düş
+    })
+    .catch(err => {
+      console.error('❌ Satın alma hatası:', err);
       alert('Satın alma başarısız oldu.');
-    }
+    });
   };
-  
+
   return (
-    <div className="market-page">
-      <h1>Global Market</h1>
+    <div className="market-container">
+      <h1>Market</h1>
+      <p>Mevcut Krediniz: <strong>{userCredits}</strong></p>
 
-      <p><strong>Kredileriniz:</strong> {userCredits} 💰</p>
-
-      {loading ? (
-        <p>Yükleniyor...</p>
-      ) : (
-        <div className="market-grid">
-          {Object.entries(themes).map(([themeName, themeData]) => (
-            <div key={themeName} className="market-item">
-              <h2>{themeName.toUpperCase()}</h2>
-              <p>{themeData.description}</p>
-              <p><strong>Fiyat:</strong> {themeData.price} 💰</p>
-              <button onClick={() => buyTheme(themeName)}>Satın Al</button>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="themes-grid">
+        {Object.entries(themes).map(([themeName, themeInfo]) => (
+          <div key={themeName} className="theme-card">
+            <h2>{themeName.toUpperCase()}</h2>
+            <p>{themeInfo.description}</p>
+            <p>Fiyat: {themeInfo.price} kredi</p>
+            <button onClick={() => buyTheme(themeName)}>Satın Al</button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
