@@ -46,7 +46,6 @@ export default function ChatPage() {
   }, [nickname, navigate]);
 
   const handleBeforeUnload = () => {
-    // Siteyi kapatırken sadece kullanıcıyı offline yapıyoruz.
     if (nickname) {
       socket.emit('logout', nickname);
     }
@@ -91,9 +90,9 @@ export default function ChatPage() {
   };
 
   const logout = () => {
-    socket.emit('logout', nickname); // Gerçekten socketten çıkış sinyali gönder
-    localStorage.removeItem('nickname'); // nickname bilgisini temizle
-    navigate('/login'); // login sayfasına yönlendir
+    socket.emit('logout', nickname);
+    localStorage.removeItem('nickname');
+    navigate('/login');
   };
 
   const displayName = (user) => {
@@ -160,7 +159,7 @@ export default function ChatPage() {
 
   const getUserThemeColor = (sender) => {
     const user = users.find((u) => u.username === sender);
-    if (!user || !user.currentTheme) return '#00ff00'; 
+    if (!user || !user.currentTheme) return '#00ff00';
 
     if (user.currentTheme === 'white') return 'white';
     if (user.currentTheme === 'lightblue') return 'lightblue';
@@ -173,8 +172,40 @@ export default function ChatPage() {
       <div className="top-header">
         <div className="logo">CHATTRIX</div>
         <div className="menu" style={{ position: 'relative' }}>
-          <span onClick={() => navigate('/market')} style={{ cursor: 'pointer', marginRight: '20px', background: '#0a0a0a', padding: '8px 12px', borderRadius: '8px', border: '1px solid #00ff00', color: '#00ff00' }}>Global Market</span>
-          <span onClick={() => setProfileMenuOpen(!profileMenuOpen)} style={{ cursor: 'pointer', background: '#0a0a0a', padding: '8px 12px', borderRadius: '8px', border: '1px solid #00ff00', color: '#00ff00' }}>Profil</span>
+          <span
+            onClick={() => navigate('/market')}
+            style={{
+              cursor: 'pointer',
+              marginRight: '20px',
+              background: '#0a0a0a',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              border: '1px solid #00ff00',
+              color: '#00ff00',
+              transition: 'all 0.3s',
+            }}
+            onMouseEnter={(e) => { e.target.style.background = '#00ff00'; e.target.style.color = '#000'; }}
+            onMouseLeave={(e) => { e.target.style.background = '#0a0a0a'; e.target.style.color = '#00ff00'; }}
+          >
+            Global Market
+          </span>
+
+          <span
+            onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+            style={{
+              cursor: 'pointer',
+              background: '#0a0a0a',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              border: '1px solid #00ff00',
+              color: '#00ff00',
+              transition: 'all 0.3s',
+            }}
+            onMouseEnter={(e) => { e.target.style.background = '#00ff00'; e.target.style.color = '#000'; }}
+            onMouseLeave={(e) => { e.target.style.background = '#0a0a0a'; e.target.style.color = '#00ff00'; }}
+          >
+            Profil
+          </span>
 
           {profileMenuOpen && (
             <div className="profile-menu" style={{ position: 'absolute', right: 0, top: '50px', background: '#0a0a0a', border: '1px solid #00ff00', borderRadius: '8px', overflow: 'hidden', animation: 'fadeIn 0.3s' }}>
@@ -198,32 +229,38 @@ export default function ChatPage() {
 
           <div className="chat-messages">
             <div className="messages-container">
-              {chat.map((c, i) => (
-                <p 
-                  key={i} 
-                  className={c.sender === 'Sistem' ? 'system' : ''} 
-                  style={{ 
-                    color: c.sender === 'Sistem' ? '#ff4444' : (getUserThemeColor(c.sender) === 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)' 
-                      ? undefined 
-                      : getUserThemeColor(c.sender)),
-                    background: getUserThemeColor(c.sender) === 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)' ? 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)' : undefined,
-                    WebkitBackgroundClip: getUserThemeColor(c.sender) === 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)' ? 'text' : undefined,
-                    color: getUserThemeColor(c.sender) === 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)' ? 'transparent' : undefined
-                  }}
-                >
-                  <span className="timestamp">[{c.timestamp}]</span>{' '}
-                  <strong>{displayMessageSender(c.sender)} ➤</strong>{' '}
-                  {c.message.startsWith('data:image') ? (
-                    <img
-                      src={c.message}
-                      alt="gönderilen resim"
-                      style={{ maxWidth: '300px', maxHeight: '300px', border: '1px solid #00ff00', marginTop: '5px' }}
-                    />
-                  ) : (
-                    <span>{c.message}</span>
-                  )}
-                </p>
-              ))}
+              {chat.map((c, i) => {
+                const themeColor = getUserThemeColor(c.sender);
+                const isRainbow = themeColor.startsWith('linear-gradient');
+
+                return (
+                  <p
+                    key={i}
+                    className={c.sender === 'Sistem' ? 'system' : ''}
+                    style={{
+                      color: c.sender === 'Sistem'
+                        ? '#ff4444'
+                        : isRainbow
+                        ? 'transparent'
+                        : themeColor,
+                      background: isRainbow ? themeColor : 'none',
+                      WebkitBackgroundClip: isRainbow ? 'text' : 'unset',
+                    }}
+                  >
+                    <span className="timestamp">[{c.timestamp}]</span>{' '}
+                    <strong>{displayMessageSender(c.sender)} ➤</strong>{' '}
+                    {c.message.startsWith('data:image') ? (
+                      <img
+                        src={c.message}
+                        alt="gönderilen resim"
+                        style={{ maxWidth: '300px', maxHeight: '300px', border: '1px solid #00ff00', marginTop: '5px' }}
+                      />
+                    ) : (
+                      <span>{c.message}</span>
+                    )}
+                  </p>
+                );
+              })}
               <div ref={messageEndRef} />
             </div>
           </div>
