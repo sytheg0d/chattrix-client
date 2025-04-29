@@ -414,3 +414,33 @@ body {
   background-color: #00cc00;
   transform: scale(1.05);
 }
+
+.profile-menu {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background: #0a0a0a;
+  border: 2px solid #00ff00;
+  border-radius: 8px;
+  width: 160px;
+  box-shadow: 0 0 10px #00ff00;
+  z-index: 999;
+}
+
+.profile-menu-item {
+  padding: 12px;
+  text-align: center;
+  font-weight: bold;
+  color: #00ff00;
+  cursor: pointer;
+  border-bottom: 1px solid #00ff00;
+}
+
+.profile-menu-item:last-child {
+  border-bottom: none;
+}
+
+.profile-menu-item:hover {
+  background-color: #00ff00;
+  color: #000;
+}

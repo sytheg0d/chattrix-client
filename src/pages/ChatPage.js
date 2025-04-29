@@ -16,7 +16,8 @@ export default function ChatPage() {
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
   const [users, setUsers] = useState([]);
-  const nickname = location.state?.nickname;
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const nickname = localStorage.getItem('nickname');
   const messageEndRef = useRef(null);
 
   useEffect(() => {
@@ -87,6 +88,11 @@ export default function ChatPage() {
     reader.readAsDataURL(file);
   };
 
+  const logout = () => {
+    localStorage.removeItem('nickname');
+    navigate('/login');
+  };
+
   const displayName = (user) => {
     if (!user || !user.username) return null;
 
@@ -153,9 +159,16 @@ export default function ChatPage() {
     <div className="chat-layout">
       <div className="top-header">
         <div className="logo">CHATTRIX</div>
-        <div className="menu">
-         <span onClick={() => navigate('/market')} style={{ cursor: 'pointer' }}>Global Market</span>
-         <span onClick={() => navigate('/profile')} style={{ cursor: 'pointer', color: '#00ff00' }}>Profil</span>
+        <div className="menu" style={{ position: 'relative' }}>
+          <span onClick={() => navigate('/market')} style={{ cursor: 'pointer', marginRight: '20px', color: '#00ff00' }}>Global Market</span>
+          <span onClick={() => setProfileMenuOpen(!profileMenuOpen)} style={{ cursor: 'pointer', color: '#00ff00' }}>Profil</span>
+
+          {profileMenuOpen && (
+            <div className="profile-menu">
+              <div className="profile-menu-item" onClick={() => alert('Profili düzenleme yakında aktif!')}>Profili Düzenle</div>
+              <div className="profile-menu-item" onClick={logout}>Logout</div>
+            </div>
+          )}
         </div>
       </div>
 

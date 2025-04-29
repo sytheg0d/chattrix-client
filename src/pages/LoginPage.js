@@ -16,7 +16,10 @@ export default function LoginPage() {
       });
 
       if (res.data.success) {
-        navigate('/chat', { state: { nickname } });
+        // Nickname localStorage'a kaydediliyor ✅
+        localStorage.setItem('nickname', nickname);
+
+        navigate('/chat');
       }
     } catch (err) {
       alert('Giriş başarısız.');
