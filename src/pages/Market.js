@@ -10,13 +10,17 @@ export default function MarketPage() {
   const nickname = localStorage.getItem('nickname');
 
   useEffect(() => {
+    if (!nickname) {
+      navigate('/login');
+      return;
+    }
     fetchMarket();
     fetchUserData();
-  }, []);
+  }, [nickname, navigate]);
 
   const fetchMarket = async () => {
     try {
-      const response = await fetch('https://chattrix-2ur3.onrender.com/market');
+      const response = await fetch('https://chattrix-server.onrender.com/market');
       const data = await response.json();
       const items = Object.keys(data).map((key) => ({
         name: key,
@@ -30,7 +34,7 @@ export default function MarketPage() {
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch('https://chattrix-2ur3.onrender.com/get-users');
+      const response = await fetch('https://chattrix-server.onrender.com/get-users');
       const users = await response.json();
       const currentUser = users.find((u) => u.username === nickname);
       if (currentUser) {
@@ -44,7 +48,7 @@ export default function MarketPage() {
 
   const buyTheme = async (themeName) => {
     try {
-      const response = await fetch('https://chattrix-2ur3.onrender.com/buy-theme', {
+      const response = await fetch('https://chattrix-server.onrender.com/buy-theme', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: nickname, theme: themeName })
@@ -63,7 +67,7 @@ export default function MarketPage() {
 
   const selectTheme = async (themeName) => {
     try {
-      const response = await fetch('https://chattrix-2ur3.onrender.com/update-theme', {
+      const response = await fetch('https://chattrix-server.onrender.com/update-theme', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: nickname, theme: themeName })
