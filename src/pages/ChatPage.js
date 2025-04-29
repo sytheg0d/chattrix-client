@@ -52,7 +52,7 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (messageEndRef.current) {
-      messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      messageEndRef.current.scrollIntoView({ behavior: 'auto' });
     }
   }, [chat]);
 
@@ -155,18 +155,28 @@ export default function ChatPage() {
     return <>@{sender}</>;
   };
 
+  const getUserThemeColor = (sender) => {
+    const user = users.find((u) => u.username === sender);
+    if (!user || !user.currentTheme) return '#00ff00'; 
+
+    if (user.currentTheme === 'white') return 'white';
+    if (user.currentTheme === 'lightblue') return 'lightblue';
+    if (user.currentTheme === 'rainbow') return 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)';
+    return '#00ff00';
+  };
+
   return (
     <div className="chat-layout">
       <div className="top-header">
         <div className="logo">CHATTRIX</div>
         <div className="menu" style={{ position: 'relative' }}>
-          <span onClick={() => navigate('/market')} style={{ cursor: 'pointer', marginRight: '20px', color: '#00ff00' }}>Global Market</span>
-          <span onClick={() => setProfileMenuOpen(!profileMenuOpen)} style={{ cursor: 'pointer', color: '#00ff00' }}>Profil</span>
+          <span onClick={() => navigate('/market')} style={{ cursor: 'pointer', marginRight: '20px', background: '#0a0a0a', padding: '8px 12px', borderRadius: '8px', border: '1px solid #00ff00', color: '#00ff00' }}>Global Market</span>
+          <span onClick={() => setProfileMenuOpen(!profileMenuOpen)} style={{ cursor: 'pointer', background: '#0a0a0a', padding: '8px 12px', borderRadius: '8px', border: '1px solid #00ff00', color: '#00ff00' }}>Profil</span>
 
           {profileMenuOpen && (
-            <div className="profile-menu">
-              <div className="profile-menu-item" onClick={() => alert('Profili düzenleme yakında aktif!')}>Profili Düzenle</div>
-              <div className="profile-menu-item" onClick={logout}>Logout</div>
+            <div className="profile-menu" style={{ position: 'absolute', right: 0, top: '50px', background: '#0a0a0a', border: '1px solid #00ff00', borderRadius: '8px', overflow: 'hidden', animation: 'fadeIn 0.3s' }}>
+              <div className="profile-menu-item" onClick={() => alert('Profili düzenleme yakında aktif!')} style={{ padding: '10px', cursor: 'pointer', color: '#00ff00', textAlign: 'center' }}>Profili Düzenle</div>
+              <div className="profile-menu-item" onClick={logout} style={{ padding: '10px', cursor: 'pointer', color: '#ff4444', textAlign: 'center' }}>Logout</div>
             </div>
           )}
         </div>
@@ -186,7 +196,18 @@ export default function ChatPage() {
           <div className="chat-messages">
             <div className="messages-container">
               {chat.map((c, i) => (
-                <p key={i} className={c.sender === 'Sistem' ? 'system' : ''}>
+                <p 
+                  key={i} 
+                  className={c.sender === 'Sistem' ? 'system' : ''} 
+                  style={{ 
+                    color: c.sender === 'Sistem' ? '#ff4444' : (getUserThemeColor(c.sender) === 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)' 
+                      ? undefined 
+                      : getUserThemeColor(c.sender)),
+                    background: getUserThemeColor(c.sender) === 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)' ? 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)' : undefined,
+                    WebkitBackgroundClip: getUserThemeColor(c.sender) === 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)' ? 'text' : undefined,
+                    color: getUserThemeColor(c.sender) === 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)' ? 'transparent' : undefined
+                  }}
+                >
                   <span className="timestamp">[{c.timestamp}]</span>{' '}
                   <strong>{displayMessageSender(c.sender)} ➤</strong>{' '}
                   {c.message.startsWith('data:image') ? (

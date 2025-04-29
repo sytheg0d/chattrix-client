@@ -18,11 +18,13 @@ body {
 .logo {
   font-size: 28px;
   font-weight: bold;
+  color: #00ff00;
 }
 
 .menu span {
   margin-left: 20px;
   cursor: pointer;
+  color: #00ff00;
 }
 
 /* Ana içerik düzeni */
@@ -34,8 +36,8 @@ body {
 
 .main-section {
   display: flex;
-  flex-direction: row; /* YAN YANA düzen */
-  height: calc(100vh - 80px); /* Üst bar dışında kalan alan */
+  flex-direction: row;
+  height: calc(100vh - 80px);
   overflow: hidden;
 }
 
@@ -71,20 +73,17 @@ body {
   color: #000;
 }
 
-/* Kullanıcı listesi scroll */
+/* Kullanıcı listesi scrollbar */
 .user-list::-webkit-scrollbar {
   width: 8px;
 }
-
 .user-list::-webkit-scrollbar-track {
   background: #111;
 }
-
 .user-list::-webkit-scrollbar-thumb {
   background: #00ff00;
   border-radius: 4px;
 }
-
 .user-list::-webkit-scrollbar-thumb:hover {
   background: #00cc00;
 }
@@ -118,16 +117,13 @@ body {
 .chat-messages::-webkit-scrollbar {
   width: 8px;
 }
-
 .chat-messages::-webkit-scrollbar-track {
   background: #111;
 }
-
 .chat-messages::-webkit-scrollbar-thumb {
   background: #00ff00;
   border-radius: 4px;
 }
-
 .chat-messages::-webkit-scrollbar-thumb:hover {
   background: #00cc00;
 }
@@ -146,7 +142,7 @@ body {
   padding: 10px 0 0 0;
 }
 
-.chat-input input {
+.chat-input input, .message-input {
   flex: 1;
   padding: 10px;
   background: #000;
@@ -156,7 +152,7 @@ body {
   font-size: 16px;
 }
 
-.chat-input button {
+.chat-input button, .send-button {
   margin-left: 10px;
   padding: 10px 20px;
   background: #00ff00;
@@ -167,7 +163,7 @@ body {
   transition: background 0.2s;
 }
 
-.chat-input button:hover {
+.chat-input button:hover, .send-button:hover {
   background: #00cc00;
 }
 
@@ -189,32 +185,7 @@ body {
   color: #000;
 }
 
-.message-input {
-  flex: 1;
-  padding: 10px;
-  background: #000;
-  border: 1px solid #00ff00;
-  color: #00ff00;
-  outline: none;
-  font-size: 16px;
-}
-
-.send-button {
-  margin-left: 10px;
-  padding: 10px 20px;
-  background: #00ff00;
-  color: #000;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.send-button:hover {
-  background: #00cc00;
-}
-
-/* Sistem mesajı rengi */
+/* Sistem mesajı */
 .system {
   color: #ff4444;
 }
@@ -226,16 +197,14 @@ body {
   margin-right: 8px;
 }
 
-/* Responsive (mobil görünüm) */
+/* Responsive */
 @media (max-width: 768px) {
   .chat-layout {
     flex-direction: column;
   }
-
   .main-section {
     flex-direction: column;
   }
-
   .user-list {
     width: 100%;
     max-height: 200px;
@@ -243,27 +212,21 @@ body {
     border-bottom: 2px solid #00ff00;
     padding: 10px;
   }
-
   .chat-section {
     padding: 10px;
   }
-
   .chat-input {
     flex-direction: column;
   }
-
-  .chat-input input,
-  .chat-input button {
+  .chat-input input, .chat-input button {
     width: 100%;
     margin: 5px 0;
   }
-
   .top-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
-
   .menu {
     display: flex;
     flex-wrap: wrap;
@@ -271,6 +234,7 @@ body {
   }
 }
 
+/* Login ekranı */
 .login-container {
   height: 100vh;
   display: flex;
@@ -280,22 +244,14 @@ body {
   padding: 20px;
 }
 
-.logo {
-  font-size: 32px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #00ff00;
-}
-
 .warning {
   font-size: 16px;
-  color: #ff0000; /* Kırmızı uyarı rengi */
+  color: #ff0000;
   margin-bottom: 20px;
   text-align: center;
   font-weight: bold;
 }
 
-/* Giriş inputları */
 .login-container input {
   width: 250px;
   padding: 10px;
@@ -305,13 +261,15 @@ body {
   color: #00ff00;
   font-size: 16px;
   outline: none;
+  box-shadow: 0 0 5px #00ff00aa;
+  transition: box-shadow 0.3s ease;
 }
 
-.login-container input::placeholder {
-  color: #00aa00;
+.login-container input:focus {
+  box-shadow: 0 0 10px #00ff00;
 }
 
-/* Giriş - Kayıt butonları */
+/* Giriş kayıt butonları */
 .button-group {
   display: flex;
   gap: 10px;
@@ -325,39 +283,12 @@ body {
   padding: 10px 20px;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.3s ease;
 }
 
 .button-group button:hover {
   background: #00ff00;
   color: #000;
-}
-
-/* Butonlarda yumuşak hover animasyonu */
-.button-group button, 
-.chat-input button, 
-.upload-icon {
-  transition: all 0.3s ease;
-}
-
-/* Login inputları ve mesaj inputları hafif parlayan görünüm */
-.login-container input, 
-.chat-input input, 
-.message-input {
-  box-shadow: 0 0 5px #00ff00aa;
-  transition: box-shadow 0.3s ease;
-}
-
-.login-container input:focus,
-.chat-input input:focus,
-.message-input:focus {
-  box-shadow: 0 0 10px #00ff00;
-}
-
-/* Giriş/Kayıt butonlarına hover'da hafif büyüme efekti */
-.button-group button:hover, 
-.chat-input button:hover, 
-.upload-icon:hover {
   transform: scale(1.05);
 }
 
@@ -415,25 +346,32 @@ body {
   transform: scale(1.05);
 }
 
+/* Hamburger Menü (Profil) */
 .profile-menu {
   position: absolute;
-  top: 60px;
+  top: 50px;
   right: 0;
   background: #0a0a0a;
   border: 2px solid #00ff00;
-  border-radius: 8px;
-  width: 160px;
-  box-shadow: 0 0 10px #00ff00;
-  z-index: 999;
+  border-radius: 10px;
+  width: 180px;
+  padding: 10px 0;
+  box-shadow: 0 0 15px #00ff00aa;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  animation: openMenu 0.3s ease forwards;
+  z-index: 100;
 }
 
 .profile-menu-item {
-  padding: 12px;
-  text-align: center;
-  font-weight: bold;
+  padding: 12px 20px;
   color: #00ff00;
+  text-align: center;
   cursor: pointer;
+  font-weight: bold;
   border-bottom: 1px solid #00ff00;
+  transition: background 0.2s, color 0.2s;
 }
 
 .profile-menu-item:last-child {
@@ -441,6 +379,33 @@ body {
 }
 
 .profile-menu-item:hover {
+  background: #00ff00;
+  color: #000;
+}
+
+/* Hamburger Açılış Animasyonu */
+@keyframes openMenu {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.menu span {
+  padding: 8px 15px;
+  border: 1px solid #00ff00;
+  border-radius: 8px;
+  color: #00ff00;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.menu span:hover {
   background-color: #00ff00;
   color: #000;
+  transform: scale(1.05);
 }

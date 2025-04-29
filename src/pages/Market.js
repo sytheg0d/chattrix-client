@@ -7,6 +7,7 @@ export default function MarketPage() {
   const [marketItems, setMarketItems] = useState([]);
   const [credits, setCredits] = useState(0);
   const [currentTheme, setCurrentTheme] = useState('default');
+  const [ownedThemes, setOwnedThemes] = useState([]);
   const nickname = localStorage.getItem('nickname');
 
   useEffect(() => {
@@ -40,13 +41,21 @@ export default function MarketPage() {
       if (currentUser) {
         setCredits(currentUser.credits || 0);
         setCurrentTheme(currentUser.currentTheme || 'default');
+        // Kullanıcının sahip olduğu temaları localden oku
+        const owned = JSON.parse(localStorage.getItem(`ownedThemes_${nickname}`)) || [];
+        setOwnedThemes(owned);
       }
     } catch (err) {
       console.error('Kullanıcı verisi çekilemedi:', err);
     }
   };
 
-  const buyTheme = async (themeName) => {
+  const buyTheme = async (themeName, themePrice) => {
+    if (credits < themePrice) {
+      alert('Yetersiz kredi.');
+      return;
+    }
+
     try {
       const response = await fetch('https://chattrix-server.onrender.com/buy-theme', {
         method: 'POST',
@@ -55,7 +64,10 @@ export default function MarketPage() {
       });
       const result = await response.json();
       if (result.success) {
-        alert(result.message);
+        alert(result.message || 'Tema satın alındı.');
+        const updatedOwnedThemes = [...ownedThemes, themeName];
+        setOwnedThemes(updatedOwnedThemes);
+        localStorage.setItem(`ownedThemes_${nickname}`, JSON.stringify(updatedOwnedThemes));
         fetchUserData();
       } else {
         alert(result.message || 'Satın alma başarısız.');
@@ -74,7 +86,7 @@ export default function MarketPage() {
       });
       const result = await response.json();
       if (result.success) {
-        alert('Tema değiştirildi!');
+        alert('Tema başarıyla değiştirildi!');
         setCurrentTheme(themeName);
       } else {
         alert('Tema değiştirilemedi.');
@@ -99,6 +111,10 @@ export default function MarketPage() {
       default:
         return { color: '#00ff00' };
     }
+  };
+
+  const hasTheme = (themeName) => {
+    return ownedThemes.includes(themeName) || themeName === 'default';
   };
 
   return (
@@ -144,6 +160,19 @@ export default function MarketPage() {
                   borderRadius: '5px',
                   cursor: 'default'
                 }} disabled>Seçili</button>
+              ) : hasTheme(item.name) ? (
+                <button style={{
+                  marginTop: '10px',
+                  backgroundColor: '#00ff00',
+                  color: 'black',
+                  border: 'none',
+                  padding: '10px 20px',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold'
+                }} onClick={() => selectTheme(item.name)}>
+                  Seç
+                </button>
               ) : (
                 <button style={{
                   marginTop: '10px',
@@ -154,14 +183,8 @@ export default function MarketPage() {
                   borderRadius: '5px',
                   cursor: 'pointer',
                   fontWeight: 'bold'
-                }} onClick={() => {
-                  if (credits >= item.price || item.price === 0) {
-                    buyTheme(item.name);
-                  } else {
-                    selectTheme(item.name);
-                  }
-                }}>
-                  {credits >= item.price ? 'Satın Al' : 'Seç'}
+                }} onClick={() => buyTheme(item.name, item.price)}>
+                  Satın Al
                 </button>
               )}
             </div>
